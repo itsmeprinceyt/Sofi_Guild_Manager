@@ -1,12 +1,23 @@
+######################### - SOFI GUILD MANAGER - #########################
+#
+# The Onl Things You Can Change, Do Not Try To Change Anything Else
+# 1- Conversion_rate
+# 2- Add or remove blacklisted members
+# 3- Add or remove lines when exporting Outputs text files
+# 4- Change Ban Emoji
+#
+##########################################################################
+
 from cryptography.fernet import Fernet
+from Auto_Update import AU
 class KEYHOLDER:
     @classmethod
     def set_key(cls,k):
         cls.KEY=k
 class guild:
+    Conversion_rate=600
     name=""
     elixir=0
-    temp=0
     wist=0
     withdraw=0
     def __init__(self,n,e,w,wd):
@@ -24,27 +35,15 @@ class guild:
     def elixir_update(self,Uelixir):
         '''This will update elixir of every account'''
         self.elixir+=Uelixir
-        self.temp=self.elixir
-        self.wist=0
-        while self.temp>=600:
-            self.temp-=600
-            self.wist+=1
+        self.wist=self.elixir//guild.Conversion_rate
     def BLelixir_update(self):
         '''This is made for blacklisted users so they won't get any elixir since they are banned'''
-        self.temp=self.elixir
-        self.wist=0
-        while self.temp>=600:
-            self.temp-=600
-            self.wist+=1
+        pass
     def elixir_withdraw(self,Welixir):
         '''This will run when someone makes a withdrawal'''
         self.elixir-=Welixir
         self.withdraw+=Welixir
-        self.temp=self.elixir
-        self.wist=0
-        while self.temp>=600:
-            self.temp-=600
-            self.wist+=1
+        self.wist=self.elixir//guild.Conversion_rate
 
 def encrypt_bank():
     KEY=KEYHOLDER.KEY
@@ -109,16 +108,17 @@ with open("key\key.txt",'rb') as f:
 MAIN_KEY= Fernet(k)
 KEYHOLDER.set_key(MAIN_KEY)
 
-#############################################
-## ONLY UPDATE BLACKLIST USER HERE NOTHING ELSE ##
+###############################################
+# YOU CAN ADD REMOVE BLACKLIST USER FROM HERE #
 BL=[5,6,7,9,10,11]
+############################################# #
 blacklist=sorted(BL)
-#############################################
 blacklistIndex=list(map(lambda x: x-1,blacklist))
 ban="<:banned:1169524797567422495>"
 
-decrypt_GMA()
+
 #Collecting Database on Current Balance {Name/Elixir/Wists}
+decrypt_GMA()
 f=open("DataBase\DATABASE_Guild_Member_Account.txt",'r')
 while True:
     l=f.readline()
@@ -130,8 +130,8 @@ while True:
 f.close()
 encrypt_GMA()
 
-decrypt_GWA()
 #Collecting Database on Withdrawn Balance {Withdrawn Amount}
+decrypt_GWA()
 f=open("DataBase\DATABASE_Guild_Withdrawn_Account.txt",'r')
 while True:
     l=f.readline()
@@ -162,9 +162,11 @@ while men==0:
     print("What do you want to do?")
     print("1-> Credit Elixir")
     print("2-> Update Withdraw")
-    print("3-> See Database")
-    print("4-> Unlock Files ")
-    print("5-> Exit")
+    print("3-> Auto Update")
+    print("4-> See Database")
+    print("5-> Unlock Files ")
+    print("6-> Change Logs")
+    print("7-> Exit")
     div()
     UI=int(input("Enter your input: "))
     div()
@@ -174,6 +176,7 @@ while men==0:
             decrypt_bank()
             decrypt_GMA()
             decrypt_GWA()
+
             #Getting Previous Elixir Balance
             with open("DataBase\DATABASE_Bank_Balance.txt",'r') as f:
                 previous_elixir=int(f.read())
@@ -191,7 +194,7 @@ while men==0:
             elixir.clear()
             withdrawn.clear()
 
-            #Collecting Database on Current Balance {Name/Elixir/Wists}
+            #Collecting Database of Current Balance {Name/Elixir/Wists}
             f=open("DataBase\DATABASE_Guild_Member_Account.txt",'r')
             while True:
                 l=f.readline()
@@ -202,7 +205,7 @@ while men==0:
                 wists.append(   int(l.split(" ")[3])    )
             f.close()
 
-            #Collecting Database on Withdrawn Balance {Withdrawn Amount}
+            #Collecting Database of Withdrawn Balance {Withdrawn Amount}
             f=open("DataBase\DATABASE_Guild_Withdrawn_Account.txt",'r')
             while True:
                 l=f.readline()
@@ -234,7 +237,7 @@ while men==0:
             encrypt_GMA()
             encrypt_GWA()
 
-            #Creating 0 ElixirUpdated Data Sheet.txt
+            #Creating ElixirUpdate.txt
             with open("Output\ElixirUpdate.txt",'w') as f:
                 f.write(f"1• <@310672946316181514>  : {data_objects[0].elixir} <:elixir:1129376026036801636> | {data_objects[0].wist} <:wist:1124833232454697040>\n\n")
                 f.write(f"2• <@769243823649062934> : {data_objects[1].elixir} <:elixir:1129376026036801636> | {data_objects[1].wist} <:wist:1124833232454697040>\n\n") 
@@ -286,6 +289,7 @@ while men==0:
             with open("DataBase\DATABASE_Bank_Balance.txt",'r') as f:
                 c_elixir=int(f.read())
 
+            #Updating Updated Balance in DATABASE_Bank_Balance.txt
             with open("DataBase\DATABASE_Bank_Balance.txt",'w') as f:
                 f.write(str(c_elixir-WA))
 
@@ -303,7 +307,7 @@ while men==0:
             encrypt_GMA()
             encrypt_GWA()
 
-            #Creating 1 ElixirWithdrawal Data Sheet.txt
+            #Creating ElixirWithdraw.txt.txt
             with open("Output\ElixirWithdraw.txt",'w') as f:
                 f.write(f"1• <@310672946316181514>  : {data_objects[0].withdraw} <:elixir:1129376026036801636>\n\n")
                 f.write(f"2• <@769243823649062934> : {data_objects[1].withdraw} <:elixir:1129376026036801636>\n\n") 
@@ -320,7 +324,7 @@ while men==0:
                 f.write(f"13• <@1160465764340482178> : {data_objects[12].withdraw} <:elixir:1129376026036801636>\n\n")
                 f.write(f"14• <@1108864210970095717> : {data_objects[13].withdraw} <:elixir:1129376026036801636>\n\n")
 
-            #Creating 0 ElixirUpdated Data Sheet.txt
+            #Creating ElixirUpdate.txt
             with open("Output\ElixirUpdate.txt",'w') as f:
                 f.write(f"1• <@310672946316181514>  : {data_objects[0].elixir} <:elixir:1129376026036801636> | {data_objects[0].wist} <:wist:1124833232454697040>\n\n")
                 f.write(f"2• <@769243823649062934> : {data_objects[1].elixir} <:elixir:1129376026036801636> | {data_objects[1].wist} <:wist:1124833232454697040>\n\n") 
@@ -342,20 +346,24 @@ while men==0:
             print("Process is done")
             div()
         case 3:
+            print("Initiating Auto Update, Sit Back And Relax. . . . .")
+            div()
+            AU.auto_update_pls()
+            print("Auto Update Done")
+            div()
+        case 4:
             for i in range(membercount):
                 print(f"•Name• {data_objects[i].name}\n•Elixir• {data_objects[i].elixir}\n•Wists• {data_objects[i].wist}\n•Withdrawn Up Until Now• {data_objects[i].withdraw}\n\n")
             div()
 
             decrypt_bank()
-
             with open("DataBase\DATABASE_Bank_Balance.txt",'r') as f:
                 c_elixir=int(f.read())
             print(f"Current Vault Balance• {c_elixir}")
-
             encrypt_bank()
 
             div()
-        case 4:
+        case 5:
             print("UNLOCKING FILES")
             div()
             decrypt_bank()
@@ -374,7 +382,30 @@ while men==0:
             print("EXITING, CHANGE DETECTED. PLEASE RESTART THE PROGRAM")
             div()
             break
-        case 5:
+        case 6:
+            print("Version 1.1")
+            print("• Added a function for those who got blacklisted!")
+
+            print("\nVersion 2.0")
+            print("• Source code shifted to Python!")
+            print("• Using text file as a Database to avoid entering user's data everytime!")
+            print("• Improved overal program and the source code to make everything automatic!")
+            print("• Added more functionality to the program including, withdrawing, accessing the Database!")
+
+            print("\nVersion 2.1")
+            print("• Added functionality to encrypt and decrypt Database to avoid information leak!")
+            print("• Added more functionality to lock and unlock Database files to edit manually!")
+            print("• Simplified Data calculation logic!")
+            print("• Added Change logs")
+
+            print("\nVersion 2.2")
+            print("• Added automatic system to update the output data to the main data!")
+
+            print("\nVersion 2.2.1")
+            print("• Made some adjustments to the automatic function to update the output data!")
+
+            div()
+        case 7:
             men=1
             break
         case _:
